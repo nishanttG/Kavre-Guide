@@ -1,0 +1,770 @@
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Travel Guide</title>
+    <style>
+        .header_phone {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 30px; 
+        }
+
+        .welcome_text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .welcome_message {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px; 
+        }
+
+        .username {
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        /* Adjusting margin to ensure proper spacing */
+        .ml-auto {
+            margin-left: 40px !important;
+        }
+
+    
+     
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Travello template project">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/bootstrap4/bootstrap.min.css' %}">
+    <link href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.theme.default.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/animate.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main_styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/responsive.css' %}">
+</head>
+<body>
+
+    <div class="super_container">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div class="header_content d-flex flex-row align-items-center justify-content-start">
+                            <div class="header_content_inner d-flex flex-row align-items-center justify-content-start">
+                                
+                                <!-- Logo -->
+                                <div class="logo" style="white-space: nowrap; margin-right: 20px;">
+                                    <a href="">Kavre Guide</a>
+                                </div>
+
+                                <!-- Navigation -->
+                                <nav class="main_nav">
+                                    <ul class="d-flex flex-row align-items-start justify-content-start">
+                                        <li ><a href="{% url 'index' %}">Home</a></li>
+                                        <li><a href="{% url 'about' %}">About Us</a></li>
+                                        <li><a href="{% url 'news' %}">Guides</a></li>
+										{% if user.is_authenticated %}
+											<li class="active"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+									 	{% else %}
+											<li><a href="{% url 'guide' %}">I am a Guide</a></li>
+									  	{% endif %}
+                                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                                        <li><a href="{% url 'destinations' %}">Destinations</a></li>
+
+                                        {% if user.is_authenticated %}
+                                            <li><a href="{% url 'logout' %}">Logout</a></li>
+                                        {% else %}
+                                            <li><a href="{% url 'register' %}">Register</a></li>
+                                            <li><a href="{% url 'login' %}">Login</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+
+                                <!-- Welcome Section (If user is authenticated) -->
+                                {% if user.is_authenticated %}
+                                    <div class="header_phone ml-auto">
+                                        <div class="welcome_text">
+                                            <span class="welcome_message">Welcome,</span>
+                                            <span class="username">{{ user.first_name }}</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                <!-- Hamburger Menu -->
+                                <div class="hamburger ml-auto">
+                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="header_social d-flex flex-row align-items-center justify-content-start">
+                <ul class="d-flex flex-row align-items-start justify-content-start">
+                    <li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-dribbble" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-behance" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                </ul>
+            </div>
+        </header>
+    </div>
+
+	
+	<!-- Home -->
+
+	<div class="home">
+		
+		<!-- Home Slider -->
+		<div class="home_slider_container">
+			<div class="owl-carousel owl-theme home_slider">
+				
+				<div class="dashboard-container">
+                    <h1>Your Dashboard</h1>
+                     <p>Manage your Bookings here</p>
+                    <div class="booking-list">
+                        {% if user_bookings %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Guide Name</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th>Preferred Date</th>
+                                         <th>Party Size</th>
+                                         <th>Message</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in user_bookings %}
+                                        <tr>
+                                           <td>
+                                             {% if booking.guide %}
+                                                  <a href="{% url 'guide_details' guide_id=booking.guide.id %}">{{booking.guide.first_name}} {{booking.guide.last_name}}</a>
+                                            {% else %}
+                                                 N/A
+                                            {% endif %}
+                                           </td>
+                                            <td>{{ booking.first_name }}</td>
+                                            <td>{{ booking.last_name }}</td>
+                                            <td>{{ booking.email }}</td>
+                                             <td>
+                                                {% if booking.preferred_date %}
+                                                  {{ booking.preferred_date }}
+                                                {% else %}
+                                                  N/A
+                                                 {% endif %}
+                                                </td>
+                                             <td>{{ booking.party_size }}</td>
+                                             <td>{{ booking.message }}</td>
+                                           <td>
+                                                <button class="action-button view-button">View</button>
+                                                <button class="action-button edit-button">Edit</button>
+                                                <button class="action-button delete-button">Delete</button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p>You haven't received any bookings yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+
+	<!-- Footer -->
+
+		
+			<div style="background-color: beige; height: 120px; color: black; display: flex; justify-content: center; align-items: center;" class="col text-center">
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved </a>
+</div>
+	
+</div>
+
+<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'styles/bootstrap4/popper.js' %}"></script>
+<script src="{% static 'styles/bootstrap4/bootstrap.min.js' %}"></script>
+<script src="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.js' %}"></script>
+<script src="{% static 'plugins/Isotope/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'plugins/scrollTo/jquery.scrollTo.min.js' %}"></script>
+<script src="{% static 'plugins/easing/easing.js' %}"></script>
+<script src="{% static 'plugins/parallax-js-master/parallax.min.js' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-23581568-13');
+</script>
+
+
+</body>
+
+</html>  {% endcomment %}
+
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>About us</title>
+<style>
+   
+    .header_phone {
+		margin-right: 35px;  /* Increased margin */
+		white-space: nowrap;
+		padding-left: 20px;  /*Added padding left*/
+		border-left: 1px ; /*Added left border to separate*/
+	}
+    
+    .header_container {
+      display: flex;
+        flex-wrap: wrap;
+         align-items: center;
+         justify-content: space-between;
+    }
+    
+    .header_content {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo a {
+      color: white;
+      font-size: 1.5rem;
+        text-decoration: none;
+    }
+    
+    .main_nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .main_nav ul li {
+      display: inline-block;
+      margin-right: 15px;
+    }
+    
+    .main_nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+    
+    .welcome_text {
+      color: white;
+      display: flex;
+        align-items: center;
+    
+    }
+    .welcome_message{
+        margin-right: 5px;
+    }
+    
+    .header_phone{
+     margin-left: auto;
+    }
+    
+    .hamburger {
+     color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: none;
+         margin-left: auto;
+    }
+    .header_social {
+        padding: 10px 0;
+    }
+    
+    .header_social ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .header_social ul li {
+        display: inline-block;
+        margin-right: 10px;
+    }
+    
+    .header_social ul li a {
+        color: white;
+        text-decoration: none;
+    }
+    
+    /* Header responsive design */
+    @media (max-width: 768px) {
+        .main_nav,
+        .header_phone{
+            display: none;
+        }
+        .hamburger {
+            display: block;
+        }
+    }
+    
+    /* Body styles */
+    .home-container{
+      display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+    }
+    
+    .home-container h1{
+        font-size: 3em;
+        color: white;
+    }
+    /* Dashboard style */
+    .dashboard-container {
+        max-width: 1000px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-container h1 {
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+    .dashboard-container h2{
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    .booking-list{
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+         justify-content: flex-start;
+        gap: 20px;
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: white;
+    }
+    
+    .table th,
+    .table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+    
+    .table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    
+    .action-button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        margin-right: 5px;
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .view-button {
+        background-color: #007bff;
+    }
+    
+    .edit-button {
+        background-color: #28a745;
+    }
+    
+    .delete-button {
+        background-color: #dc3545;
+    }
+    /*Message style*/
+    .message-list{
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .message-card{
+         background-color: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .reply-button{
+       background-color: #28a745;
+       color: white;
+       padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        margin-right: 5px;
+        cursor: pointer;
+        
+    }
+    /* Dashboard card */
+    .booking-card {
+        background-color: white;
+        border-radius: 8px;
+        border: 1px solid #eee;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        width: 300px;
+        padding: 15px;
+    }
+    
+    .booking-card-header{
+        width: 100%;
+    }
+    
+    .booking-card-img{
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .booking-card-body {
+        padding: 15px;
+    }
+    .booking-actions {
+        margin-top: 15px;
+    }
+    .booking-message-wrapper{
+        margin-top: 10px;
+    }
+    .tourguide-message{
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 5px;
+    }
+    /*login page style*/
+    .login-container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .edit-booking-container{
+      max-width: 500px;
+      margin: 50px auto;
+        padding: 20px;
+    }
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+         gap: 10px;
+    }
+    
+    .form-group {
+     margin-bottom: 15px;
+     width: 49%;
+    }
+    .form-group label {
+     display: block;
+      margin-bottom: 5px;
+     font-weight: bold;
+    }
+    
+    .form-group input, .form-group textarea {
+     width: 100%;
+      padding: 10px;
+       border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      font-size: 1em;
+    }
+    .checkbox-group{
+      margin-bottom: 10px;
+    }
+    
+    .login-button {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1.1em;
+        margin-top: 10px;
+    }
+    .cancel-button{
+        background-color: #f0f0f0;
+        color: black;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1.1em;
+        margin-top: 10px;
+         text-decoration: none;
+        display: inline-block;
+         text-align: center;
+    }
+    .delete-booking-container{
+         max-width: 400px;
+         margin: 50px auto;
+         padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .delete-button:hover{
+     color: red;
+    }
+</style>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="Travello template project">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="{% static 'styles/bootstrap4/bootstrap.min.css' %}">
+<link href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.theme.default.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/animate.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'styles/about.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'styles/about_responsive.css' %}">
+</head>
+<body>
+
+<div class="super_container">
+	
+	<!-- Header -->
+
+	<header class="header">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="header_content d-flex flex-row align-items-center justify-content-start">
+						<div class="header_content_inner d-flex flex-row align-items-end justify-content-start">
+							<div class="logo"><a href="index">Kavre Guide</a></div>
+                            <nav class="main_nav">
+                                <ul class="d-flex flex-row align-items-start justify-content-start">
+                                    <li ><a href="{% url 'index' %}">Home</a></li>
+                                    <li><a href="{% url 'about' %}">About Us</a></li>
+                                    <li><a href="{% url 'news' %}">Guides</a></li>
+                                    {% if user.is_authenticated %}
+                                        <li class="active"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                                     {% else %}
+                                        <li><a href="{% url 'guide' %}">I am a Guide</a></li>
+                                      {% endif %}
+                                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                                    <li><a href="{% url 'destinations' %}">Destinations</a></li>
+
+                                    {% if user.is_authenticated %}
+                                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                                    {% else %}
+                                        <li><a href="{% url 'register' %}">Register</a></li>
+                                        <li><a href="{% url 'login' %}">Login</a></li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+								
+								{% if user.is_authenticated %}
+									<div class="header_phone ml-auto">Welcome, {{ user.first_name }}</div>
+								{% endif %}
+								
+
+							<!-- Hamburger -->
+
+							<div class="hamburger ml-auto">
+								<i class="fa fa-bars" aria-hidden="true"></i>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="header_social d-flex flex-row align-items-center justify-content-start">
+			<ul class="d-flex flex-row align-items-start justify-content-start">
+				<li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-dribbble" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-behance" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+			</ul>
+		</div>
+	</header>
+
+	<!-- Menu -->
+
+	<div class="menu">
+		<div class="menu_header d-flex flex-row align-items-center justify-content-start">
+			<div class="menu_logo"><a href="..">Travel World</a></div>
+			<div class="menu_close_container ml-auto"><div class="menu_close"><div></div><div></div></div></div>
+		</div>
+		<div class="menu_content">
+			<ul>
+				<li><a href="..">Home</a></li>
+				<li class="active"><a href="about">About Us</a></li>
+				<li><a href="news">News</a></li>
+				<li><a href="guide">I am a Guide</a></li>
+				<li><a href="contact">Contact</a></li>
+
+				{% if user.is_authenticated %}
+					<li><a href="logout">Logout</a></li>
+				{% else %}
+					<li><a href="register">Register</a></li>
+					<li><a href="login">Login</a></li>
+				{% endif %}
+			</ul>
+		</div>
+		<div class="menu_social">
+			{% if user.is_authenticated %}
+				<div class="menu_phone ml-auto">Logged in: {{user.first_name}} {{user.last_name}}</div>
+			{% else %}
+				<div class="menu_phone ml-auto">Call us: 00-56 445 678 33</div>
+				<ul class="d-flex flex-row align-items-start justify-content-start">
+					<li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-dribbble" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-behance" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+				</ul>
+			{% endif %}
+		</div>
+	</div>
+	
+	<!-- Home -->
+
+	<div class="home">
+		<div class="background_image" style="background-image:url({% static 'images/about.jpg' %})"></div>
+	</div>
+
+	<!-- Search -->
+
+	<div class="home_search">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="home_search_container">
+						<div class="home_search_title">Search for your trip</div>
+						<div class="home_search_content">
+							<form action="#" class="home_search_form" id="home_search_form">
+								<div class="d-flex flex-lg-row flex-column align-items-start justify-content-lg-between justify-content-start">
+									<input type="text" class="search_input search_input_1" placeholder="City" required="required">
+									<input type="text" class="search_input search_input_2" placeholder="Departure" required="required">
+									<input type="text" class="search_input search_input_3" placeholder="Arrival" required="required">
+									<input type="text" class="search_input search_input_4" placeholder="Budget" required="required">
+									<button class="home_search_button">search</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- dashboard edit bookings -->
+    <div class="edit-booking-container">
+        <h1>Edit Booking</h1>
+        <div class="booking-card">
+         <form method="post">
+             {% csrf_token %}
+             <div class="form-row">
+               <div class="form-group">
+                   <label for="{{ form.first_name.id_for_label }}">First name:</label>
+                   {{ form.first_name }}
+                 </div>
+                 <div class="form-group">
+                   <label for="{{ form.last_name.id_for_label }}">Last name:</label>
+                   {{ form.last_name }}
+                 </div>
+             </div>
+             <div class="form-group">
+                 <label for="{{ form.email.id_for_label }}">Email:</label>
+                {{ form.email }}
+              </div>
+            <div class="form-row">
+               <div class="form-group">
+                 <label for="{{ form.preferred_date.id_for_label }}">Preferred date:</label>
+                 {{ form.preferred_date }}
+              </div>
+              <div class="form-group">
+                   <label for="{{ form.party_size.id_for_label }}">Party size:</label>
+                   {{ form.party_size }}
+                 </div>
+             </div>
+             <div class="form-group">
+                   <label for="{{ form.message.id_for_label }}">Message:</label>
+                   {{ form.message }}
+             </div>
+            <div class="checkbox-group">
+                 {{ form.accept_terms }}
+                 {{ form.accept_terms.label_tag }}
+             </div>
+                <div class="button-group">
+                    <button type="submit" class="login-button">Save</button>
+                    <a href="{% url 'dashboard' %}" class="cancel-button">Cancel</a>
+                 </div>
+         </form>
+        </div>
+     </div>
+
+
+	<!-- Footer -->
+		
+		<div style="background-color: beige; height: 120px; color: black; display: flex; justify-content: center; align-items: center;" class="col text-center">
+			Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved </a>
+			</div>
+	</footer>
+</div>
+
+<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'styles/bootstrap4/popper.js' %}"></script>
+<script src="{% static 'styles/bootstrap4/bootstrap.min.js' %}"></script>
+<script src="{% static 'plugins/greensock/TweenMax.min.js' %}"></script>
+<script src="{% static 'plugins/greensock/TimelineMax.min.js' %}"></script>
+<script src="{% static 'plugins/scrollmagic/ScrollMagic.min.js' %}"></script>
+<script src="{% static 'plugins/greensock/animation.gsap.min.js' %}"></script>
+<script src="{% static 'plugins/greensock/ScrollToPlugin.min.js' %}"></script>
+<script src="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.js' %}"></script>
+<script src="{% static 'plugins/easing/easing.js' %}"></script>
+<script src="{% static 'plugins/parallax-js-master/parallax.min.js' %}"></script>
+<script src="{% static 'js/about.js' %}"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-23581568-13');
+</script>
+
+
+</body>
+
+</html>

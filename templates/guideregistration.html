@@ -1,0 +1,258 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Guide Registration</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Guide Registration Form">
+
+    <!-- Static CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/bootstrap4/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/destinations.css' %}">
+    
+    <style>
+        /* Background Image for the Entire Page */
+        body {
+            background: url("{% static 'images/login.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            margin: 0; /* Remove default margin */
+            padding: 0;
+             display: flex;
+            flex-direction: column;
+             min-height: 100vh; /* Ensure full viewport height */
+        }
+    
+        /* Transparent Header/Navbar */
+        .header {
+            background: transparent !important; /* Force transparency */
+            box-shadow: none !important; /* Remove box shadow */
+            position: absolute; /* Sit above the background image */
+            top: 0;
+            width: 100%;
+            z-index: 1000; /* Ensure it stays on top */
+        }
+    
+        /* Navigation Link Styling */
+        .main_nav ul li a {
+            color: #fff !important; /* White text for better visibility */
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: color 0.3s ease; /* Smooth hover effect */
+        }
+    
+        .main_nav ul li a:hover {
+            color: #f97316 !important; /* Highlight color on hover */
+        }
+    
+        /* Form Container Styling */
+        .form-container {
+            width: 50%;
+             max-width: 600px; /* Set a max width for better readability on larger screens */
+            margin: 150px auto 50px auto; /* Push form below the navbar */
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9); /* White background with slight opacity */
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+               flex: 1; /* Take up remaining space */
+               display: flex;
+               flex-direction: column; /* Ensure flex elements are stacked vertically */
+                justify-content: start; /* Align to the top of the container*/
+
+        }
+    
+        .form-container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+    
+        /* Input and Button Styling */
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+              display: block;
+               position: relative;
+                padding-left: 10px;
+        }
+        
+        .required-field::before {
+            content: "*"; /* Add asterisk */
+            color: red;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+        
+       .form-check {
+        margin-top: 15px;
+           display: flex;
+           align-items: baseline;  /* Aligns the items at their text baseline */
+        }
+
+      .form-check input {
+         margin-right: 5px; /* Space between checkbox and label */
+          margin-top: 0; /* Removes the input margin */
+          width: auto;
+        }
+        
+       .form-check label {
+           margin-top: 0; /* Removes the label margin */
+            padding-left: 0;
+            position: relative;
+        }
+     
+      .form-check label::before{
+           content: "*"; /* Add asterisk */
+           color: red;
+         position: absolute;
+          left: -10px;
+          top:0;
+          }
+        
+    
+        button {
+            background-color: #f97316;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 16px;
+            cursor: pointer;
+             align-self: center;
+            width: max-content
+        }
+    
+        button:hover {
+            background-color: #e55e0d;
+        }
+        
+         .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+             text-align: center;
+              margin-top: auto; /* Push footer to the bottom */
+
+            }
+            
+        /* Style for error messages */
+         .form-group .errorlist {
+             color: red;
+            margin-top: 5px; /* Reduce gap */
+            margin-bottom: 10px;
+
+            }
+        
+       .form-group .errorlist li {
+           list-style: none; /* Remove bullet points */
+         }
+            
+    </style>
+</head>
+
+<body>
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="header_content d-flex flex-row align-items-center justify-content-start">
+                        <div class="logo"><a href="{% url 'about' %}">Kavre Guide</a></div>
+                        <nav class="main_nav">
+                            <ul class="d-flex flex-row align-items-start justify-content-start">
+                                <li ><a href="{% url 'index' %}">Home</a></li>
+                                <li><a href="{% url 'about' %}">About Us</a></li>
+                                <li ><a href="{% url 'news' %}">Guides</a></li>
+                                {% if user.is_authenticated %}
+                                    <li> <a href="{% url 'dashboard' %}">Dashboard</a></li>
+                                {% else %}
+                                    <li class="active"><a href="{% url 'guide' %}">I am a Guide</a></li>
+                                {% endif %}
+                                <li><a href="{% url 'contact' %}">Contact</a></li>
+                                <li><a href="{% url 'destinations' %}">Destinations</a></li>
+
+                                {% if user.is_authenticated %}
+                                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                                {% else %}
+                                    <li ><a href="{% url 'register' %}">Register</a></li>
+                                    <li ><a href="{% url 'login' %}">Login</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+
+                        {% if user.is_authenticated %}
+                            <div class="header_phone ml-auto">Welcome, {{ user.first_name }}</div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Form Section -->
+    <div class="form-container">
+        <h2>Guide Registration</h2>
+         <form method="POST" enctype="multipart/form-data">
+             {% csrf_token %}
+             {% for field in form %}
+                <div class="form-group">
+                   <label {% if field.field.required and field.name != "username" %}class="required-field" {% endif %}>{{ field.label }}</label>
+                  {{field}}
+                    {% if field.errors %}
+                     <ul class="errorlist">
+                       {% for error in field.errors %}
+                         <li>{{error}}</li>
+                       {% endfor %}
+                     </ul>
+                   {% endif %}
+                </div>
+             {% endfor %}
+              
+            <div class="form-check">
+                <input type="checkbox" id="privacy" class="form-check-input" required>
+                <label class="required-field" for="privacy">I accept the website's privacy policy</label>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+     <footer class="footer">
+        <div class="container">
+            <p>
+               Copyright ©
+                <script>
+                   document.write(new Date().getFullYear());
+                </script>
+                Kavre Guide. All Rights Reserved.
+            </p>
+        </div>
+   </footer>
+
+    <!-- Static JS -->
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'styles/bootstrap4/popper.js' %}"></script>
+    <script src="{% static 'styles/bootstrap4/bootstrap.min.js' %}"></script>
+    <script src="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.js' %}"></script>
+    <script src="{% static 'plugins/easing/easing.js' %}"></script>
+    <script src="{% static 'js/destinations.js' %}"></script>
+</body>
+</html>

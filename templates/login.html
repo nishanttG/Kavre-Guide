@@ -1,0 +1,210 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login - Kavre Guide</title>
+    <meta charset="utf-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Travello template project">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/bootstrap4/bootstrap.min.css' %}">
+    <link href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.theme.default.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/animate.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/about.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/about_responsive.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('{% static 'images/login.jpg' %}'); /* Set the background image */
+            background-size: cover; /* Adjust background image size */
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Optional: keep the background fixed */
+            background-color:rgb(57, 115, 201);
+            font-family: 'Arial', sans-serif;
+        }
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .login-wrapper {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+        }
+        .login-image {
+             display: none; /* Hide the image div */
+        }
+        .login-content {
+            width: 100%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .login-form {
+            width: 100%;
+        }
+        .login-form h2 {
+            color:rgb(25, 74, 122);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-control {
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-login:hover {
+            background-color: #2980b9;
+        }
+        .login-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solidrgb(45, 134, 156);
+        }
+        .login-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            color:rgb(49, 186, 196);
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .login-tab.active {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+        }
+        #guideLogin, #touristLogin {
+            display: none;
+        }
+        #guideLogin.active, #touristLogin.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="super_container">
+	
+        <!-- Header -->
+    
+        <header class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div class="header_content d-flex flex-row align-items-center justify-content-start">
+                            <div class="header_content_inner d-flex flex-row align-items-end justify-content-start">
+                                <div class="logo"><a href="{% url 'index' %}">Kavre Guide</a></div>
+                               <!-- Navigation -->
+                               <nav class="main_nav">
+                                <ul class="d-flex flex-row align-items-start justify-content-start">
+                                    <li ><a href="{% url 'index' %}">Home</a></li>
+                                    <li><a href="{% url 'about' %}">About Us</a></li>
+                                    <li ><a href="{% url 'news' %}">Guides</a></li>
+                                    {% if user.is_authenticated %}
+                                        <li> <a href="{% url 'dashboard' %}">Dashboard</a></li>
+                                     {% else %}
+                                        <li><a href="{% url 'guide' %}">I am a Guide</a></li>
+                                      {% endif %}
+                                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                                    <li><a href="{% url 'destinations' %}">Destinations</a></li>
+
+                                    {% if user.is_authenticated %}
+                                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                                    {% else %}
+                                        <li ><a href="{% url 'register' %}">Register</a></li>
+                                        <li class="active"><a href="{% url 'login' %}">Login</a></li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+
+                                    {% if user.is_authenticated %}
+                                        <div class="header_phone ml-auto">Welcome, {{ user.first_name }}</div>
+                                    {% endif %}
+                                    
+    
+                                <!-- Hamburger -->
+    
+                                <div class="hamburger ml-auto">
+                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+     </header>
+    <div class="login-container">
+        <div class="login-wrapper">
+            <div class="login-image"></div>
+            <div class="login-content">
+                <div class="login-tabs">
+                    <div class="login-tab active" data-target="touristLogin">Tourist Login</div>
+                    <div class="login-tab" data-target="guideLogin">Guide Login</div>
+                </div>
+
+                <div id="touristLogin" class="login-form active">
+                    <h2>Tourist Login</h2>
+                    <form action="{% url 'login' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="text" name="username" class="form-control" placeholder="Username" required>
+                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        <button type="submit" class="btn-login">Login</button>
+                    </form>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="text-danger mt-2">{{message}}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div id="guideLogin" class="login-form">
+                    <h2>Guide Login</h2>
+                    <form action="{% url 'guide_login' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="text" name="username" class="form-control" placeholder="Username" required>
+                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        <button type="submit" class="btn-login">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.login-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs and login forms
+                document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.login-form').forEach(f => f.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding login form
+                this.classList.add('active');
+                document.getElementById(this.dataset.target).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

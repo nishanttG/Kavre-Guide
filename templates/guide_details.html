@@ -1,0 +1,340 @@
+{% load static %}
+{% load accounts_extras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>{{ guide.first_name }} {{ guide.last_name }}</title>
+    <style>
+        /* Your CSS styles here */
+           .guide-details {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.card {
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+.card-img-top {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+    object-fit: cover;
+}
+.card-title {
+    font-size: 1.5rem;
+}
+.card-text i {
+    margin-right: 5px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+.table{
+    width: 100%;
+    margin-top: 20px;
+}
+.table th,
+.table td {
+    padding: 10px;
+}
+.table-bordered {
+    border-collapse: collapse;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #ddd;
+}
+.available{
+ background-color: #e6f7ff;
+ cursor: pointer;
+}
+.unavailable{
+   background-color: #f2f2f2;
+    cursor: not-allowed;
+}
+    /* Calendar styles */
+.availability-calendar {
+  margin-top: 10px;
+  
+  }
+  .availability-calendar h3{
+      text-align: center;
+      margin-bottom: 5px;
+  }
+  .calendar-month{
+      border: 1px solid #e0e0e0;
+      padding: 5px;
+    margin-bottom: 5px;
+  }
+ .calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.9em;
+    color: #888;
+    padding: 2px;
+
+  }
+
+ .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .calendar-day {
+     display: flex;
+    align-items: center;
+      justify-content: center;
+    height: 25px;
+      width: 25px;
+    text-align: center;
+    border: 1px solid #f0f0f0;
+    font-size: 0.85em;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+ .calendar-day.available {
+   background-color: rgba(0, 128, 0, 0.2);
+  
+  }
+
+ .calendar-day.unavailable {
+  background-color: #eee;
+
+   }
+   .calendar-day.empty{
+    border: none;
+    cursor: default;
+  }
+  .header_phone {
+    margin-right: 35px;  /* Increased margin */
+    white-space: nowrap;
+    padding-left: 20px;  /*Added padding left*/
+    border-left: 1px ; /*Added left border to separate*/
+}
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Travello template project">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/bootstrap4/bootstrap.min.css' %}">
+    <link href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/owl.theme.default.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'plugins/OwlCarousel2-2.2.1/animate.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/destinations.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/destinations_responsive.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+</head>
+<body>
+     <!-- Your HTML structure from the previous response goes here -->
+       <!-- Header -->
+    <header class="header">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="header_content d-flex flex-row align-items-center justify-content-start">
+						<div class="header_content_inner d-flex flex-row align-items-end justify-content-start">
+							<div class="logo"><a href="{% url "index" %}">Kavre Guide</a></div>
+							<nav class="main_nav">
+								<ul class="d-flex flex-row align-items-start justify-content-start">
+									<li><a href="{% url "index" %}">Home</a></li>
+									<li ><a href="{% url 'about' %}">About Us</a></li>
+									<li class="active"><a href="{% url 'news' %}">Guides</a></li>
+									<li><a href="{% url 'guide' %}">I am a Guide</a></li>
+									<li><a href="{% url 'contact' %}">Contact</a></li>
+									<li ><a href="{% url 'destinations' %}">Destinations</a></li>
+								
+									{% if user.is_authenticated %}
+										<li><a href="{% url 'logout' %}">Logout</a></li>
+									{% else %}
+										<li><a href="{% url 'register' %}">Register</a></li>
+										<li><a href="{% url 'login' %}">Login</a></li>
+									{% endif %}
+								</ul>
+								</nav>
+								
+                                <div class="header_phone ml-auto">
+                                    {% if user.is_authenticated %}
+                                        Welcome, {{ user.first_name }}
+                                    {% endif %}
+                                </div>
+								
+							<!-- Hamburger -->
+
+							<div class="hamburger ml-auto">
+								<i class="fa fa-bars" aria-hidden="true"></i>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="header_social d-flex flex-row align-items-center justify-content-start">
+			<ul class="d-flex flex-row align-items-start justify-content-start">
+				<li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-dribbble" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-behance" aria-hidden="true"></i></a></li>
+				<li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+			</ul>
+		</div>
+	</header>
+
+	<!-- Menu -->
+
+	<div class="menu">
+		<div class="menu_header d-flex flex-row align-items-center justify-content-start">
+			<div class="menu_logo"><a href="..">Travel World</a></div>
+			<div class="menu_close_container ml-auto"><div class="menu_close"><div></div><div></div></div></div>
+		</div>
+		<div class="menu_content">
+			<ul>
+				<li><a href="..">Home</a></li>
+				<li><a href="about">About Us</a></li>
+				<li><a href="news">News</a></li>
+				<li><a href="guide">I am a Guide</a></li>
+				<li class="active"><a href="contact">Contact</a></li>
+
+				{% if user.is_authenticated %}
+					<li><a href="logout">Logout</a></li>
+				{% else %}
+					<li><a href="register">Register</a></li>
+					<li><a href="login">Login</a></li>
+				{% endif %}
+			</ul>
+		</div>
+		<div class="menu_social">
+			{% if user.is_authenticated %}
+				<div class="menu_phone ml-auto">Logged in: {{user.first_name}} {{user.last_name}}</div>
+			{% else %}
+				<div class="menu_phone ml-auto">Call us: 00-56 445 678 33</div>
+				<ul class="d-flex flex-row align-items-start justify-content-start">
+					<li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-dribbble" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-behance" aria-hidden="true"></i></a></li>
+					<li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+				</ul>
+			{% endif %}
+		</div>
+	</div>
+	
+	<!-- Home -->
+
+	<div class="home">
+		<div class="background_image" style="background-image:url({% static 'images/destinations.jpg' %})"></div>
+	</div>
+    <br><br><br>
+
+
+	
+       
+     
+       
+    <div class="container guide-details">
+        <div class="row">
+            <!-- Left section: Guide image and basic details -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ guide.photo.url }}" class="card-img-top" alt="{{ guide.first_name }} {{ guide.last_name }}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ guide.first_name }} {{ guide.last_name }}</h5>
+                        <p class="card-text">
+                            <strong><i class="fas fa-location-dot"></i> {{ guide.city_or_region }}</strong>, {{ guide.country }}<br>
+                            <span> <i class="fas fa-globe"></i> {{ guide.mother_tongue }}</span>
+                        </p><br>
+                        <a href="{% url 'contact_guide' guide.id %}" class="btn btn-primary">Message {{ guide.first_name }}</a>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Right section: Detailed information -->
+            <div class="col-md-8">
+                <h2>I'm {{ guide.first_name }}, your private tour guide in {{ guide.country }}</h2><br>
+                <h6>Guide ID: #{{ guide.id }}</h6><br>
+                <p>{{ guide.presentation }}</p>
+                <ul>
+                    <li><strong>Phone:</strong> {{ guide.phone_number }}</li>
+                    <li><strong>Email:</strong> {{ guide.email }}</li>
+                    <li><strong>Certified Guide:</strong> {{ guide.certified_guide|yesno:"Yes,No" }}</li>
+                </ul>
+                <p>
+                    <strong>Tour Languages:</strong> {{ guide.tour_languages }}
+                </p>
+            </div>
+        </div>
+ <!-- Availability calendar -->
+ <div class="availability-calendar">
+    {% if calendar_data %}
+         {% for cal_data in calendar_data %}
+         <h3>{{cal_data.month_name}}</h3>
+         <div class="calendar-month">
+         <div class="calendar-header">
+            <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+          </div>
+             <div class="calendar-days">
+              {% for i in cal_data.first_day_range %}
+              <div class="calendar-day empty"></div>
+              {% endfor %}
+              {% for day in cal_data.days %}
+                    <div class="calendar-day {% if day.is_available %}available{% else %}unavailable{% endif %}">{{ day.day }}</div>
+                  {% endfor %}
+           </div>
+           </div>
+        {% endfor %}
+     {% endif %}
+  </div>
+ <div style="display: flex; align-items:center; margin-top: 5px;">
+     <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #e6f7ff; margin-right:5px;"></span>Available
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #f2f2f2; margin-left:10px; margin-right:5px;"></span>Not Available
+  </div>
+
+
+<div style="background-color: beige; height: 120px; color: black; display: flex; justify-content: center; align-items: center;" class="col text-center">
+			Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved </a> </div>
+<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'styles/bootstrap4/popper.js' %}"></script>
+<script src="{% static 'styles/bootstrap4/bootstrap.min.js' %}"></script>
+<script src="{% static 'plugins/OwlCarousel2-2.2.1/owl.carousel.js' %}"></script>
+<script src="{% static 'plugins/easing/easing.js' %}"></script>
+<script src="{% static 'plugins/Isotope/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'plugins/parallax-js-master/parallax.min.js' %}"></script>
+<script src="{% static 'js/destinations.js' %}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-23581568-13');
+</script>
+
+</body>
+</html>
